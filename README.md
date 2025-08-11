@@ -4,8 +4,6 @@ Una herramienta de línea de comandos (CLI) escrita en Rust para organizar archi
 
 Este proyecto no solo es una utilidad práctica, sino también un caso de estudio diseñado para ser un recurso de aprendizaje para desarrolladores que se inician en Rust y quieren construir herramientas de sistema robustas y profesionales.
 
----
-
 ## Características
 
 *   **Organización Basada en Reglas:** Organiza archivos en subdirectorios definidos por el usuario (`Documentos`, `Imagenes`, etc.) basándose en sus extensiones.
@@ -14,8 +12,6 @@ Este proyecto no solo es una utilidad práctica, sino también un caso de estudi
 *   **Modo de Simulación (`--dry-run`):** Permite ver qué cambios se harían sin modificar o eliminar ningún archivo, para mayor seguridad.
 *   **Manejo de Errores Robusto:** Utiliza las mejores prácticas de Rust para un manejo de errores que no causa "panics", informando al usuario de forma clara.
 *   **Probado Automáticamente:** Incluye una suite de tests de integración que asegura que la funcionalidad principal opera como se espera.
-
----
 
 ## Instalación y Uso
 
@@ -64,8 +60,6 @@ Este proyecto no solo es una utilidad práctica, sino también un caso de estudi
     ./target/release/organizador_cli --directorio . --deduplicate
     ```
 
----
-
 ## Archivo de Configuración (`config.toml`)
 
 Para usar la herramienta, crea un archivo `config.toml` en el mismo directorio. La estructura es la siguiente:
@@ -82,8 +76,6 @@ extensions = ["pdf", "doc", "docx", "txt", "md"]
 [rules.Comprimidos]
 extensions = ["zip", "rar", "tar", "gz"]
 ```
-
----
 
 ## Conceptos Clave y Aprendizajes del Proyecto
 
@@ -121,8 +113,6 @@ Este ciclo **Test -> Fallo -> Corrección -> Éxito** es la base del desarrollo 
 *   **Testing de Integración con `assert_cmd` y `assert_fs`:**
     *   **Concepto:** Los tests de integración prueban la aplicación "desde fuera", como lo haría un usuario. En Rust, viven en el directorio `tests`.
     *   **En el código:** Usamos `assert_fs` para crear un directorio temporal con archivos y configuraciones de prueba. Luego, `assert_cmd` ejecuta el binario compilado y, finalmente, volvemos a usar `assert_fs` para hacer "assertions" (comprobaciones) sobre el resultado final (p. ej., `assert(path::is_file())`).
-
----
 
 ## Licencia
 
