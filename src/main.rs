@@ -20,10 +20,12 @@ struct Config {
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Cli {
+    ///Es el directorio sobre el cual se trabajará
     #[arg(short, long, required = true)]
     directorio: PathBuf,
     #[arg(short, long, default_value = "config.toml")]
     config: PathBuf,
+    ///Activa la ejecución sin acción, solo informa lo que hará, pero no lo hace.
     #[arg(long)]
     dry_run: bool,
     /// Activa la detección y eliminación de archivos duplicados por contenido.
