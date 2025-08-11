@@ -13,6 +13,14 @@ Este proyecto no solo es una utilidad práctica, sino también un caso de estudi
 *   **Manejo de Errores Robusto:** Utiliza las mejores prácticas de Rust para un manejo de errores que no causa "panics", informando al usuario de forma clara.
 *   **Probado Automáticamente:** Incluye una suite de tests de integración que asegura que la funcionalidad principal opera como se espera.
 
+## Descarga el binario de la última versión.
+
+Este binario se puede ejecutar directamente.
+
+[Última versión](https://github.com/jcmt2k/organizador-cli/releases/latest)
+
+[Descarga v1.0.0](https://github.com/jcmt2k/organizador-cli/releases/download/v1.0.0/organizador_cli)
+
 ## Instalación y Uso
 
 1.  **Clonar el Repositorio:**
