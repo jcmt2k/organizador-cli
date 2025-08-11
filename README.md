@@ -1,0 +1,133 @@
+# Organizador de Archivos (organizador_cli)
+
+Una herramienta de línea de comandos (CLI) escrita en Rust para organizar archivos en un directorio según reglas personalizables, con detección y eliminación de duplicados.
+
+Este proyecto no solo es una utilidad práctica, sino también un caso de estudio diseñado para ser un recurso de aprendizaje para desarrolladores que se inician en Rust y quieren construir herramientas de sistema robustas y profesionales.
+
+---
+
+## Características
+
+*   **Organización Basada en Reglas:** Organiza archivos en subdirectorios definidos por el usuario (`Documentos`, `Imagenes`, etc.) basándose en sus extensiones.
+*   **Configuración Flexible:** Todas las reglas se definen en un archivo `config.toml` fácil de editar.
+*   **Detección de Duplicados:** Opción para identificar y eliminar archivos con contenido idéntico (usando hashing SHA-256), conservando solo una copia.
+*   **Modo de Simulación (`--dry-run`):** Permite ver qué cambios se harían sin modificar o eliminar ningún archivo, para mayor seguridad.
+*   **Manejo de Errores Robusto:** Utiliza las mejores prácticas de Rust para un manejo de errores que no causa "panics", informando al usuario de forma clara.
+*   **Probado Automáticamente:** Incluye una suite de tests de integración que asegura que la funcionalidad principal opera como se espera.
+
+---
+
+## Instalación y Uso
+
+1.  **Clonar el Repositorio:**
+    ```sh
+    git clone https://github.com/jcmt2k/organizador-cli.git
+    cd organizador-cli
+    ```
+
+2.  **Compilar para Producción:**
+    ```sh
+    cargo build --release
+    ```
+    El ejecutable final se encontrará en `target/release/organizador_cli`.
+
+3.  **Uso Básico:**
+
+    Para ver todas las opciones disponibles, la forma más sencilla es usar el parámetro `--help`:
+
+    ```sh
+    ./target/release/organizador_cli --help
+    ```
+
+    La salida será la siguiente, mostrando todos los parámetros y sus valores por defecto:
+    ```
+    Usage: organizador_cli [OPTIONS] --directorio <DIRECTORIO>
+    
+    Options:
+      -d, --directorio <DIRECTORIO>  
+      -c, --config <CONFIG>          [default: config.toml]
+          --dry-run                  
+          --deduplicate              Activa la detección y eliminación de archivos duplicados por contenido.
+      -h, --help                     Print help
+      -V, --version                  Print version
+    ```
+
+    **Ejemplos de Ejecución:**
+    ```sh
+    # Ejecutar en el directorio actual
+    ./target/release/organizador_cli --directorio .
+    
+    # Usar el modo de simulación
+    ./target/release/organizador_cli --directorio . --dry-run
+    
+    # Activar la eliminación de duplicados
+    ./target/release/organizador_cli --directorio . --deduplicate
+    ```
+
+---
+
+## Archivo de Configuración (`config.toml`)
+
+Para usar la herramienta, crea un archivo `config.toml` en el mismo directorio. La estructura es la siguiente:
+
+```toml
+# Cada sección define una carpeta de destino.
+[rules.Imagenes]
+# `extensions` es una lista de las extensiones que irán en esa carpeta.
+extensions = ["jpg", "jpeg", "png", "gif"]
+
+[rules.Documentos]
+extensions = ["pdf", "doc", "docx", "txt", "md"]
+
+[rules.Comprimidos]
+extensions = ["zip", "rar", "tar", "gz"]
+```
+
+---
+
+## Conceptos Clave y Aprendizajes del Proyecto
+
+Este proyecto es un excelente ejemplo práctico de varios conceptos fundamentales y librerías (crates) del ecosistema de Rust.
+
+### 1. El Ciclo de Vida de un Software Robusto
+
+Más allá del código, este proyecto demuestra un ciclo de desarrollo profesional:
+1.  **Desarrollo de Funcionalidad:** Se implementa una característica (p. ej., la deduplicación).
+2.  **Testing:** Se escribe un test que comprueba el comportamiento esperado de esa característica.
+3.  **Detección de Bugs:** El test falla y revela un bug sutil (el orden no determinista de los archivos).
+4.  **Corrección:** Se corrige el bug en el código de la aplicación.
+5.  **Verificación:** Se corrige el test para que refleje el nuevo comportamiento determinista y se vuelve a ejecutar para confirmar que todo funciona.
+
+Este ciclo **Test -> Fallo -> Corrección -> Éxito** es la base del desarrollo de software confiable y de alta calidad, y es una de las habilidades más importantes que un desarrollador puede demostrar.
+
+### 2. Conceptos de Rust y su Ecosistema
+
+*   **CLI Profesional con `clap`:**
+    *   **Concepto:** `clap` es la librería estándar de facto para crear aplicaciones de línea de comandos. Permite definir argumentos, opciones y subcomandos de forma declarativa.
+    *   **En el código:** Usamos `#[derive(Parser)]` sobre la `struct Cli` para mapear automáticamente los argumentos de la línea de comandos a los campos de la estructura. Atributos como `#[arg(...)]` nos dan un control fino sobre cada parámetro.
+
+*   **Configuración con `serde` y `toml`:**
+    *   **Concepto:** `serde` es el framework de serialización y deserialización de Rust. Permite convertir datos de un formato (como TOML o JSON) a structs de Rust y viceversa, de forma casi mágica.
+    *   **En el código:** Usamos `#[derive(Deserialize)]` en las `structs` `Config` y `Rule`. Luego, `toml::from_str(&content)` lee el contenido de `config.toml` y lo vuelca directamente en nuestra `struct Config`, validando la estructura por nosotros.
+
+*   **Manejo de Errores con `anyhow`:**
+    *   **Concepto:** Rust maneja los errores que pueden ocurrir (p. ej., un archivo no encontrado) con los tipos `Result` y `Option`. `anyhow` es una librería que simplifica este manejo en aplicaciones, permitiendo usar el operador `?` para propagar errores y añadir contexto fácilmente.
+    *   **En el código:** La función `main` devuelve un `Result<()>`. En lugar de usar `.expect()` (que causa un `panic`), usamos el operador `?` al final de cada operación que puede fallar (p. ej., `fs::read_to_string(...)?`). Esto, junto con `.with_context()`, nos da un programa que no "se rompe" y que informa de los errores de forma útil.
+
+*   **Hashing con `sha2`:**
+    *   **Concepto:** Un hash es una "huella digital" del contenido de un archivo. Archivos con contenidos idénticos siempre producirán el mismo hash. SHA-256 es un algoritmo de hashing estándar y seguro.
+    *   **En el código:** La función `file_hash` abre un archivo, lo lee trozo a trozo y alimenta a un `Sha256::new()`. El resultado es un hash único que usamos para detectar duplicados.
+
+*   **Testing de Integración con `assert_cmd` y `assert_fs`:**
+    *   **Concepto:** Los tests de integración prueban la aplicación "desde fuera", como lo haría un usuario. En Rust, viven en el directorio `tests`.
+    *   **En el código:** Usamos `assert_fs` para crear un directorio temporal con archivos y configuraciones de prueba. Luego, `assert_cmd` ejecuta el binario compilado y, finalmente, volvemos a usar `assert_fs` para hacer "assertions" (comprobaciones) sobre el resultado final (p. ej., `assert(path::is_file())`).
+
+---
+
+## Licencia
+
+Este proyecto está bajo la **Licencia MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+
+## Contribuciones
+
+Las contribuciones son bienvenidas. Si encuentras un error o tienes una idea para mejorar, no dudes en abrir un *issue* o un *pull request*.

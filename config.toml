@@ -1,0 +1,14 @@
+# Reglas de organización de archivos
+# Cada sección es una carpeta de destino y su lista de extensiones.
+
+[rules.Imagenes]
+extensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg"]
+
+[rules.Documentos]
+extensions = ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "md"]
+
+[rules.Videos]
+extensions = ["mp4", "mov", "avi", "mkv"]
+
+[rules.Comprimidos]
+extensions = ["zip", "rar", "tar", "gz"]
